@@ -26,6 +26,6 @@
 		else {
 			html = $.tmplSubstitute( template, data );
 		}
-		return html;
+		return $(html);
 	};
 })( jQuery );
