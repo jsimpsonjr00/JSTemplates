@@ -1,0 +1,71 @@
+/*
+ *  A generic schema for defining a custom form to be built on the fly by traversing a JSON object.
+ *  Custom fields are translated into the submission title or link based upon custom defined 
+ *  substitution templates. Templates consist of field IDs of form ${id}. The $, {, and } are
+ *  therefore reserved, while other characters are fair game for inclusion into the templates.
+ *
+ */
+var testSchema = {
+    "title":    "Redditors At Work: Submit new Offer", // optional: if omitted, a generic one takes its place
+    "kind":     "self",     //link or self only valid entries, this translates to either an input for the link or textarea
+    "fields": [             //fields placed on the form in order of inclusion
+        { // text, password or checkbox allowed
+            "type":     "text",
+            "id":       "link-title",
+            "size":     "64",   
+            "label":    "Link Title",
+            "ph":       "main title of this link"
+        },
+        {  //Radio, Dropdown follow this pattern
+            "type":         "radio",
+            "id":           "some-radio",       //ID to name the radio group
+            "label":        "Submission Type",
+            "options": [
+                {
+                    "value":    "option-value",
+                    "text":     "option-text",
+                    "attr":     "checked='checked'"           //defalut this item to checked with a custom attribute
+                },
+                {
+                    "value":   "option-value2",
+                    "text":     "option-text2"
+                }
+            ]
+        },
+        {  //Dropdown
+            "type":         "select",
+            "id":           "some-select",       //ID to name the radio group
+            "label":        "Dropdown Choices",
+            "options": [
+                {
+                    "value":    "option-value",
+                    "text":     "option-text"
+                },
+                {
+                    "value":   "option-value2",
+                    "text":     "option-text2",
+                    "attr":     "selected"           //defalut this item to selected with a custom attribute
+                }
+            ]
+        },
+        // text, password, checkbox
+        {
+            "type":     "text",
+            "id":       "some-input-text",      //ID of the text input
+            "size":     "64",                   //max characters
+            "label":    "Type of Link",
+            "ph":       "placeholder text"
+        },
+        { //Defines the link control for either a url or self text
+            "type":     "textarea",
+            "id":       "link-id",
+            "label":    "Your Text Area for the taking",
+            "size":     "256"  //maximum character length for the Self Text ONLY
+        }
+    ],
+    //Define templates used on form submission: TODO: should these be here?
+    "templates": { //Defines simple custom substitution templates extracted from the ID of fields to generate custom submissions 
+        "title":    "[${some-radio}] [${some-input-text}] - ${link-title}",
+        "link":     "${link-id} <br> ${some-input-text}"
+    }
+}

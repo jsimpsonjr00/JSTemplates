@@ -1,0 +1,51 @@
+<script type='text/html' id='generic-form-schema-template'>
+    <form id='submit-offer' class=''>
+        <div class='modal-header'>
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>${title}</h3>
+        </div>
+        <fieldset class='modal-body'></fieldset>
+        <div class='modal-footer'>
+            <button class='btn'>Cancel</button>
+            <button class='btn btn-inverse'>Submit Offer</button>
+        </div>
+    </form>
+</script>
+
+<script type='text/html' id='form-field-template-textarea'>
+    <label>${label}</label>
+    <textarea></textarea>
+</script>
+        
+<script type='text/html' id='form-field-template-text'>
+    <label for='${id}'>${label}</label>
+    <input type='${type}' placeholder='${ph}' id='${id}' maxlength='${size}'>
+</script>
+
+<script type='text/html' id='form-field-template-radio'>
+    <div class='radio-group'>
+        <label>${label}</label>
+    </div>
+</script>
+
+<script type='text/html' id='form-field-template-radio-option'>
+    <label class="${type}">
+        <input type="${type}" name="${id}" id="${id}" value="${option.value}" ${option.attr}">
+        ${option.text}
+    </label>
+</script>    
+
+<script type='text/html' id='form-field-template-select'>
+    <label>${label}</label>
+    <select id='${id}'></select>
+</script>
+<script type='text/html' id='form-field-template-select-option'>
+    <option value="${option.value}" ${option.attr}>${option.text}</option>
+</script>
+        
+<script type='text/html' id='form-field-template-checkbox'>
+    <label class="${type}">
+        <input type="${type}" name="${id}" id="${id}" value="${value}" ${attr}>
+        ${text}
+    </label>
+</script>
