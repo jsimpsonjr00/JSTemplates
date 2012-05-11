@@ -18,9 +18,9 @@
 			html 		= "",
 			i;
 		
-		if( map instanceof Array ) { //treat as an array of maps
-			for ( i in map ) {
-				html += $tmpl.Substitute( template, data[i] );
+		if( data instanceof Array ) { //treat as an array of maps
+			for ( i in data ) {
+				html += $.tmplSubstitute( template, data[i] );
 			}
 		} 
 		else {

@@ -13,11 +13,14 @@
 ( function ( $ ) {
 	$.tmplSubstitute = function( template, map ){
 		//Replace instances of ${key.child.child} pattern
-		var html = template.replace(/\$\{([^\s\:\}]+)(?:\:([^\s\:\}]+))?\}/g,
+		//Template nesting pattern ${templateID:key}
+		var html = template.replace(/\$\{([^\s\}]+)(?:([^\s\}]+))?\}/g,
 			function(match, key ){
-				var splitKey = key.split("."),
-					value = map,
-					temp = "";
+				var nestedTmpl	= key.split(":"),
+					isNested	= ( nestedTmpl.length > 1 ) ? true : false,
+					splitKey 	= ( isNested ) ? nestedTmpl[1].split(".") : nestedTmpl[0].split("."),
+					value 		= map,
+					temp 		= "";
 				
 				for( var SK in splitKey ) { //Handle map traversal 
 					temp = splitKey[SK];	//cache current key
@@ -30,6 +33,12 @@
 						break;
 					} 
 				}
+				
+				if( isNested ) { //nested template, apply it to the specified data
+					var $nestedTmpl = $("#" + nestedTmpl[0]);
+					value = $("<div></div>").append( $nestedTmpl.applyTemplate( value ) ).html();
+				}
+				
 				return value.toString();
 			}
 		);
