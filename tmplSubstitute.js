@@ -10,31 +10,33 @@
  * Returns:
  * 	String - final string after pattern substitution completes
  */
+/* ===============================
+ * 	Inline Template Spec
+ * ===============================
+ * 
+ * 	<template data='map.full.path.key'>
+ * 		${data.relative.path.key}
+ * 	</template>
+ * 
+ */
 ( function ( $ ) {
-	$.tmplSubstitute = function( template, map ){
+	//namespace for JSTemplate helper functions
+	if( $.JSTemplates === undefined ) {
+		$.JSTemplates = {};
+	}
+	
+	$.JSTemplates.substitute = function( template, map ){
 		//Replace instances of ${key.child.child} pattern
 		//Template nesting pattern ${templateID:key}
-		var html = template.replace(/\$\{([^\s\}]+)(?:([^\s\}]+))?\}/g,
+		var html = $.JSTemplates.evalInlineTemplates( template, map );
+		
+		html = html.replace(/\$\{([^\s\}]+)(?:([^\s\}]+))?\}/g,
 			function(match, key ){
 				var nestedTmpl	= key.split(":"),
-					isNested	= ( nestedTmpl.length > 1 ) ? true : false,
-					splitKey 	= ( isNested ) ? nestedTmpl[1].split(".") : nestedTmpl[0].split("."),
-					value 		= map,
-					temp 		= "";
+					dataKey		= nestedTmpl[ nestedTmpl.length - 1 ],
+					value 		= $.JSTemplates.resolveKey( dataKey, map );
 				
-				for( var SK in splitKey ) { //Handle map traversal 
-					temp = splitKey[SK];	//cache current key
-					if( value[temp] != undefined ) {
-						value = value[temp];
-					}
-					else {	//key maps to an invalid location in map, break out
-						value = "";
-						console ? console.log("Key: " + key + " element " + temp + " undefined in template map") : null;
-						break;
-					} 
-				}
-				
-				if( isNested ) { //nested template, apply it to the specified data
+				if( nestedTmpl.length > 1 ) { //nested template, apply it to the specified data
 					var $nestedTmpl = $("#" + nestedTmpl[0]);
 					value = $("<div></div>").append( $nestedTmpl.applyTemplate( value ) ).html();
 				}
@@ -43,5 +45,41 @@
 			}
 		);
 		return html;
+	};
+	$.JSTemplates.evalInlineTemplates = function ( html, map ) {
+		var $html		= $(html),
+			templates	= $html.find("template").get().reverse(), //reverse order array of templates to process child elements first
+			$templates 	= $(templates);
+		
+		$templates.each( function () {
+			var $tmpl	= $(this),
+				dataKey	= $tmpl.attr("data"), 						//TODO: put in error checking
+				data	= $.JSTemplates.resolveKey( dataKey, map ),
+				$result = $tmpl.applyTemplate( data ); //apply a template substitution
+			
+			$tmpl.after( $result )
+				.remove();
+		});
+		
+		return $("<div></div>").append($html).html(); //wrap to extract the applied template results
+	};
+	$.JSTemplates.resolveKey = function ( dataKey, map ) {
+		var splitKey	= dataKey.split("."),
+			value 		= map,
+			temp 		= "";
+		
+		for( var SK in splitKey ) { //Handle map traversal 
+			temp = splitKey[SK];	//cache current key
+			if( value[temp] != undefined ) {
+				value = value[temp];
+			}
+			else {	//key maps to an invalid location in map, break out
+				value = "";
+				console ? console.log("Key: " + dataKey + " element " + temp + " undefined in template map") : null;
+				break;
+			} 
+		}
+		
+		return value;
 	};
 })( jQuery );
