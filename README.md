@@ -33,16 +33,34 @@ Templates follow the script block method so as not to include the template as pa
         <div class='tags'>
             ${my-tag-template:tags}
         </div>
+        <template data='map.full.path.key'>
+            ${data.relative.path.key}
+        </template>
     </script>    
       
-This example includes the three supported substitution methods. ${title} is replaced by the dataMap.title string, while
+This example includes the supported substitution methods and an inline template example. ${title} is replaced by the dataMap.title string, while
 ${text.html} traverses to dataMap.text.html before substitution. Finally, ${my-tag-template:tags} invokes a nested template
 by executing $("#my-tag-template).applyTemplate( dataMap.tags ) whose return value is converted to html and substituted
 into #my-template. This allows for most use cases and nested template support is quite powerful.
 
+Inline Templates
+============
+Inline templates are an alternative approach to the ID form. Rather than including each template in its own script tag you
+may include template elements directly within the parent. These take the form of a custom HTML tag and evaluate the code
+within as if sent to applyTemplate. These are primarily intended for looping through arrays within a given data map. Here's 
+a very simple example:
+
+    <template data='map.full.path.key'>
+        ${data.relative.path.key}
+    </template>
+    
+All data attributes are relative to the templates initial data map. Subsequent usage within the inline template is relative
+to the data key specified by the data attribute.
+
 Template Substitution
 ============
-The tmplSubstitute.js module adds a function to the jQuery object jQuery.tmplSubstitute. This is a helper function utilized
-by applyTemplate to convert individual data entries into html strings. It may also be used directly if desired with the form:
-$.tmplSubstitute( $("#my-template").html(), dataMap ); However, this method only works on 1 individual item and will not
+The JSTemplates.js file contains a number of methods namespaced to $.JSTemplates. The primary method is 
+$.JSTemplates.substitute which performs substitutions and processes inline templates with the other helper functions in the
+$.JSTemplates namespace. This is a helper function utilized by applyTemplate to convert individual data entries into html strings. It may also be used directly if desired with the form:
+$.JSTemplates.substitute( $("#my-template").html(), dataMap ); However, this method only works on 1 individual item and will not
 iterate through arrays. I do not recommend direct usage typically. 
