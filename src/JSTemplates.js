@@ -1,6 +1,6 @@
 /*
- * jQuery Plugin function tmplSubstitute is a very simple paternized substitution
- * based on dojo.string.substitute with all dependencies removed and barebones functionality.
+ * 	jQuery namspaced function $.JSTemplates.substitute is a simple paternized substitution
+ * 	based on dojo.string.substitute with all dependencies removed and barebones functionality.
  *  Added ability to include map traversal with full path keys such as ${key.child.child}
  * 
  * Paramaters:
@@ -63,7 +63,7 @@
 		
 		return $("<div></div>").append($html).html(); //wrap to extract the applied template results
 	};
-	$.JSTemplates.resolveKey = function ( dataKey, map ) {
+	$.JSTemplates.resolveKey = function ( dataKey, map ) { //translates a key to its value in map
 		var splitKey	= dataKey.split("."),
 			value 		= map,
 			temp 		= "";

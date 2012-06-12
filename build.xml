@@ -1,0 +1,9 @@
+<project basedir="." name="jsTKBlogger">
+	<concat destfile="JSTemplates-source.js">
+        <fileset dir="src" includes="*.js"/>
+    </concat>
+	<java id='ClosureCompile' fork='true' jar="..\compiler.jar">
+          <arg line='--js JSTemplates-source.js'/>
+          <arg line='--js_output_file JSTemplates-min.js'/>
+    </java>
+</project>
