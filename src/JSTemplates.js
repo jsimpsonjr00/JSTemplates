@@ -28,7 +28,7 @@
 	$.JSTemplates.substitute = function( template, map ){
 		//Replace instances of ${key.child.child} pattern
 		//Template nesting pattern ${templateID:key}
-		var html = $.JSTemplates.evalInlineTemplates( template, map );
+		var html = $.JSTemplates.newEvalInlineTemplates( template, map ); //template; //$.JSTemplates.evalInlineTemplates( template, map );
 		
 		html = html.replace(/\$\{([^\s\}]+)(?:([^\s\}]+))?\}/g,
 			function(match, key ){
@@ -46,6 +46,7 @@
 		);
 		return html;
 	};
+	//deprecated - caused errors when template data was inserted into html element attributes
 	$.JSTemplates.evalInlineTemplates = function ( html, map ) {
 		var $html		= $(html),
 			templates	= $html.find("template").get().reverse(), //reverse order array of templates to process child elements first
@@ -63,12 +64,42 @@
 		
 		return $("<div></div>").append($html).html(); //wrap to extract the applied template results
 	};
+	//	New Inline Template evaluation - The jQuery approach caused errors in some browsers by replacing 
+	// 	template tags erroneously when creating the $html object. This lead to some data not being inserted
+	// 	into the template. This code is quick and dirty, possibly with errors.
+	$.JSTemplates.newEvalInlineTemplates = function ( html, map ) {
+		var startTags = html.split( "<template" ); // /<template(\w)>/g  //array of templates split by starting tag
+		
+		for( var i = startTags.length-1; i >= 0; i--) {
+			var closeTags = startTags[i].split("</template>");
+			var element = "";
+			var dataKey = "";
+			var value = "";
+			
+			if( closeTags.length > 1 ) {
+				element 	= startTags.pop().replace("</template>", "");// + closeTags[0];
+				element = element.replace(/data\='([^\s]+)'>/, function( match, key ) {
+					dataKey = key;
+					return "";
+				});  	//extract template elements data attribute
+				value 		= $.JSTemplates.resolveKey( dataKey, map ); //translate data attribute into map data
+				element 	= $.JSTemplates.substitute( element, value ); //treat element as template against value
+			
+				startTags[i-1] += element;
+				if( closeTags.length > 2 ) { //nested inline template
+					startTags[i-1] += closeTags.join("</template>"); //attach remaining close fragments
+				}
+			}
+		}
+		return startTags.join("");
+	};
+	
 	$.JSTemplates.resolveKey = function ( dataKey, map ) { //translates a key to its value in map
 		var splitKey	= dataKey.split("."),
 			value 		= map,
 			temp 		= "";
 		
-		for( var SK in splitKey ) { //Handle map traversal 
+		for( var SK = 0; SK < splitKey.length; SK++ ) { //Handle map traversal 
 			temp = splitKey[SK];	//cache current key
 			if( value[temp] != undefined ) {
 				value = value[temp];

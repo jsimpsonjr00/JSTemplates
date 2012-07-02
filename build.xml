@@ -2,7 +2,7 @@
 	<concat destfile="JSTemplates-source.js">
         <fileset dir="src" includes="*.js"/>
     </concat>
-	<java id='ClosureCompile' fork='true' jar="..\compiler.jar">
+	<java id='ClosureCompile' fork='true' jar="C:\Development\Builders\compiler.jar">
           <arg line='--js JSTemplates-source.js'/>
           <arg line='--js_output_file JSTemplates-min.js'/>
     </java>
