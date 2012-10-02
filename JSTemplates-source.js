@@ -133,7 +133,7 @@
 			html 		= "",
 			i;
 		
-		if( data instanceof Array ) { //treat as an array of maps
+		if( data instanceof Array || Object.prototype.toString.call(data) === "[object Array]" ) { //treat as an array of maps
 			for ( i in data ) {
 				html += $.JSTemplates.substitute( template, data[i] );
 			}

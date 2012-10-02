@@ -1,4 +1,4 @@
-<project basedir="." name="jsTKBlogger">
+<project basedir="." name="JSTemplates">
 	<concat destfile="JSTemplates-source.js">
         <fileset dir="src" includes="*.js"/>
     </concat>
