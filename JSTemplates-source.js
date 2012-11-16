@@ -106,7 +106,7 @@
 			}
 			else {	//key maps to an invalid location in map, break out
 				value = "";
-				console ? console.log("Key: " + dataKey + " element " + temp + " undefined in template map") : null;
+				window.console ? console.log("Key: " + dataKey + " element " + temp + " undefined in template map") : null;
 				break;
 			} 
 		}
