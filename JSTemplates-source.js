@@ -141,6 +141,6 @@
 		else {
 			html = $.JSTemplates.substitute( template, data );
 		}
-		return $(html);
+		return $( $.parseHTML( html ) ); //jQuery 1.9.1 was complaining about some input, this is a workaround
 	};
 })( jQuery );
